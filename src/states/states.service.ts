@@ -27,7 +27,10 @@ export class StatesService {
       throw new NotFoundException('Block not found');
     }
 
-    return { block: block.blockState, keys: block.keyState.keys };
+    return {
+      block: block.blockState,
+      keys: block.keyState.keys,
+    };
   }
 
   async findByBlockHash(blockHash: string) {
@@ -48,6 +51,9 @@ export class StatesService {
       throw new NotFoundException('Block not found');
     }
 
-    return { block: block.blockState, keys: block.keyState.keys };
+    return {
+      block: block.blockState,
+      keys: JSON.stringify(block.keyState.keys),
+    };
   }
 }
