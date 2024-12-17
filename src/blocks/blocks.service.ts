@@ -1,27 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class BlocksService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.block.findMany();
+  async findAll() {
+    const blocks = await this.prisma.block.findMany();
+
+    return blocks.map((block) => ({
+      block: block.blockState,
+      nonce: block.contractNonce.toString(),
+    }));
   }
 
-  findByBlockNumber(blockNumber: number) {
-    return this.prisma.block.findFirst({
+  async findByBlockNumber(blockNumber: number) {
+    const block = await this.prisma.block.findFirst({
       where: {
         blockNumber,
       },
     });
+
+    if (!block) {
+      throw new NotFoundException('Block not found');
+    }
+
+    return { block: block.blockState, nonce: block.contractNonce.toString() };
   }
 
-  findByBlockHash(blockHash: string) {
-    return this.prisma.block.findFirst({
+  async findByBlockHash(blockHash: string) {
+    const block = await this.prisma.block.findFirst({
       where: {
         blockHash,
       },
     });
+
+    if (!block) {
+      throw new NotFoundException('Block not found');
+    }
+
+    return { block: block.blockState, nonce: block.contractNonce.toString() };
   }
 }

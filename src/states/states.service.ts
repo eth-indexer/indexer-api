@@ -5,8 +5,12 @@ import { PrismaService } from 'src/prisma.service';
 export class StatesService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.keyState.findMany();
+  async findAll() {
+    const allStates = await this.prisma.keyState.findMany();
+    return allStates.map((state) => ({
+      nonce: state.nonce.toString(),
+      keys: state.keys,
+    }));
   }
 
   async findByBlockNumber(blockNumber: number) {
@@ -53,7 +57,7 @@ export class StatesService {
 
     return {
       block: block.blockState,
-      keys: JSON.stringify(block.keyState.keys),
+      keys: block.keyState.keys,
     };
   }
 }
