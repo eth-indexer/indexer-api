@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { StatesService } from './states.service';
 
-@Controller('keys')
+@Controller('state')
 export class StatesController {
   constructor(private readonly statesService: StatesService) {}
 

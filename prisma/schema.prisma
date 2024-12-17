@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,3 +6,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model Block {
+  id              BigInt    @id @default(autoincrement())
+  blockNumber     BigInt
+  blockHash       String    @db.Char(66)
+  parentBlockHash String    @db.Char(66)
+  contractNonce   BigInt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  blockState      Json     
+  isFinalized     Boolean   @default(false)
+  keyState        KeyState  @relation(fields: [contractNonce], references: [nonce])
+}
+
+model KeyState {
+  id              BigInt       @id @default(autoincrement())
+  nonce           BigInt       @unique  
+  keys            Json         
+  blocks          Block[]
+}
+
